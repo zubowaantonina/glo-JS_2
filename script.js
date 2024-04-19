@@ -1,56 +1,72 @@
 "use strict";
-// 1) Создать функцию-конструктор DomElement, который
-//    содержит свойства
-//   - selector,
-//   - height,
-//   - width,
-//   - bg,
-//   - fontSize
-// содержит метод, который создает элемент на странице в зависимости от условия:
-// - если строка selector начинается с точки, создаем div с классом
-// - если строка selector начинается с решетки # то создаем параграф с id
-// пример:
-// если передана строка '.block', то функция конструктор создает элемент с class="block"
-// если передана строка '#best', то функция конструктор создает элемент с id =best"
-// с помощью cssText задавать стили:
-//   - высотой - height,
-//   - шириной - width,
-//   - background - bg
-//   - размер текста fontSize
-// Внутрь созданного блока записывать любой текст. Метод записи может быть любым.
-// 2) Создать новый объект на основе класса DomElement
-// 3) Вызвать его метод чтобы создать элемент на странице
+// 1) Используя class DomElement из основного задания №1, создать квадрат 100 на 100 пикселей. 
+// Ему необходимо задать фон(background) любого цвета и свойство position: absolute.
+// 2) Поместить его на страницу только после выполнения события DOMContentLoaded.
+// Внутри тега должно быть только подключение скрипта.
+// 3) Написать обработчик события для keydown, который будет принимать callback-функцию. 
+// Данная функция будет отлавливать нажатие на стрелки клавиатуры. В зависимости от нажатой 
+// кнопки(Вверх - стрелка вверх, Влево - стрелка влево, Вправо - стрелка вправо, Вниз - стрелка 
+// вниз) наш квадрат будет перемещаться на 10 пикселей.
+// */
+document.addEventListener('DOMContentLoaded', function (event) {
+    const px = 10;
+    const DomElement = function (selector , styleAtr = {}) {
+        this.selector='.block';
+        this.height = '100px';
+        this.width = '100px';
+        this.bg = 'green';
+        this.fontSize = '10px';
+        this.cssText = '';
 
-const DomElement = function (selector, height, width, bg, fontSize) {
-    this.selector = selector;
-    this.height = height;
-    this.width = width;
-    this.bg = bg;
-    this.fontSize = fontSize;
-}
-DomElement.prototype.createElem = function () {
-    let element;
-    if (this.selector.startsWith(".")) {
-        element = document.createElement("div");
-        element.classList.add(this.selector)
-        // console.log(element);
-        document.body.append(element);
-    } else if (this.selector.startsWith("#")) {
-        element = document.createElement('p');
-        element.setAttribute('id', this.selector);
-        // console.log(element);
-        document.body.append(element);
-    }
-    element.style.cssText = `height: ${this.height}px;
-    width: ${this.width}px;
-    background: ${this.bg};
-    font-size: ${this.fontSize}px;`;
-    element.textContent = "Любой текст"
-}
+        if (!('height' in styleAtr)) {
+            styleAtr.height = '100px';
+        }
+        if (!('width' in styleAtr)) {
+            styleAtr.width = '100px';
+        }
+        if (!('background' in styleAtr)) {
+            styleAtr.background = 'green';
+        }
+        if (!('font-size' in styleAtr)) {
+            styleAtr['font-size'] = '10px';
+        }
 
-const newElement1 = new DomElement('#best', "100", "200", "red", "25");
-const newElement2 = new DomElement('.block', "100", "200", "green", "25");
-
-newElement1.createElem()
-newElement2.createElem()
-
+        for (let key in styleAtr) {
+            this.cssText += `${key}: ${styleAtr[key]}; `;
+        }
+    };
+    
+    DomElement.prototype.newElem = function () {
+        let elem;
+        elem = document.createElement('div');
+        if (this.selector[0] === '.') {
+            elem = document.createElement('div');
+            elem.className = this.selector.slice(1);
+        }
+        elem.style.cssText = this.cssText;
+        
+        elem.style.cssText += `left: ${Math.round(window.innerWidth / 2 - parseInt(this.width) / 2)}px; `;
+        elem.style.cssText += `top: ${Math.round(window.innerHeight / 2 - parseInt(this.height) / 2)}px; `;
+        elem.style.cssText +=`position: absolute;`
+        elem.addEventListener('click', this.transfer);
+        return elem;
+    };
+    const square=new DomElement()
+    document.body.appendChild(square.newElem());
+  
+    document.addEventListener('keyup', (event) => {
+        const div = document.querySelector('div');
+        if (event.key === 'ArrowUp') {
+            div.style.top = parseInt(div.style.top) - px + 'px';
+        }
+        if (event.key === 'ArrowRight') {
+            div.style.left = parseInt(div.style.left) + px + 'px';
+        }
+        if (event.key === 'ArrowLeft') {
+            div.style.left = parseInt(div.style.left) - px + 'px';
+        }
+        if (event.key === 'ArrowDown') {
+            div.style.top = parseInt(div.style.top) + px + 'px';
+        }
+    });
+});

@@ -1,21 +1,28 @@
 "use strict";
 
-const btn = document.querySelector("#btn");
-const eBtn = document.querySelector("#e_btn");
-const circle = document.querySelector("#circle");
-const square = document.querySelector("#square");
-const text = document.querySelector("#text");
-const input = document.querySelector("#range");
-const span = document.querySelector("#range-span");
+// 1) Два класса, First и Second, Second наследует от First .
+// 2) В First есть метод hello - он печатает в консоль "Привет я метод родителя!".
+// 3) Нужно написать в Second метод hello, чтоб он сначала вызывал метод hello из First, 
+// а потом сразу печатал в консоль "А я наследуемый метод!"
+// */
 
-btn.addEventListener("click", () => {
-  square.style.background = text.value;
-});
+class First {
+    constructor () {}
+    hello () {
+        console.log('Привет я метод родителя!');
+    }
+}
 
-eBtn.style.display = "none";
+class Second extends First {
+    constructor () {
+        super();
+    }
+    hello () {
+        super.hello();
+        console.log('А я наследуемый метод!');
+    }   
+}
 
-input.addEventListener("input", () => {
-  span.innerHTML = input.value;
- circle.style.width = `${input.value}%`;
- circle.style.height = `${input.value}%`;
-});
+const test = new Second();
+
+test.hello();

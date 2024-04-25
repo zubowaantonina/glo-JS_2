@@ -32,12 +32,12 @@ DomElement.prototype.createElem = function () {
     let element;
     if (this.selector.startsWith(".")) {
         element = document.createElement("div");
-        element.classList.add(this.selector)
+        element.classList.add(this.selector.slice(1))
         // console.log(element);
         document.body.append(element);
     } else if (this.selector.startsWith("#")) {
         element = document.createElement('p');
-        element.setAttribute('id', this.selector);
+        element.setAttribute('id', this.selector.slice(1));
         // console.log(element);
         document.body.append(element);
     }
